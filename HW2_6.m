@@ -15,11 +15,12 @@
 %   property, we know that A_coarser = I_restrict*A_finer*I_interpolate
 
 w = 2/3; 
-n=8; 
-h = 1/n
+n=16; 
+h=1/n; 
 x = 0:h:1; 
 size(x);
 
+%Need to have vh be length n-1
 main = 2*ones(n-1,1); 
 off = -1*ones(n-1,1); 
 Ah = spdiags([off main off],-1:1, n-1,n-1);
@@ -29,8 +30,7 @@ levels = 4;
 
 for i = 1:levels
     if i ==1 
-        v = x.^2;
-        v = v(2:end-1); 
+        v = zeros(length(x)-2,1); 
         v_array{i} = v; 
         f_array{i} = zeros(length(x)-2,1); 
     else
@@ -40,8 +40,5 @@ for i = 1:levels
     f_array{i} = zeros(length(x)-2,1); 
     end
 end
-v_array = fliplr(v_array)
-f_array = fliplr(f_array);
+[v_array,f_array] = vcycle(h,f_array,v_array,l, nu1, nu2)
 %Gives the solution at the coarsest grid
-[v_array,f_array,Ah_coarsest] = coarsen(Ah,f_array,v_array,levels); 
-[v_array, f_array] = refine(Ah,f_array,v_array,2);
