@@ -22,12 +22,13 @@ switch type
         two_matrix = spdiags(d, 0, n+1,n);
         %create matrix with twos on diagonal size n/2 by n/2-1
         ones_matrix = spdiags([d1 d1],-1:0, n+1,n);
-        %ones_matrix = full(ones_matrix)
+        %ones_matrix = full(ones_matrix);
         rows = size(two_matrix,1) + size(ones_matrix,1); %adding the number of rows of the two matrices
-        %two_matrix = full(two_matrix)
+       % two_matrix = full(two_matrix);
         row_interweave = reshape([ones_matrix(:) two_matrix(:) ]',rows, []);
         row_interweave = row_interweave(1:end-1,:)';
         
+        row_interweave;
         %if v_old is a row vector, put your thang down flip it and reverse it
         if iscolumn(v_old) == 0
             v_old = v_old';
