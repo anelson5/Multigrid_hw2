@@ -1,10 +1,12 @@
-function [v_new] = interpolate(h,v_old)
+function [v_new] = interpolate(v_old)
 %INTERPOLATE - interpolates fine grid nodes from the coarse grid
 %   Set up interpolation matrix 
 %   Set up matrix of (n-1)x(n/2-1)
 %   Form (n/2-1)x(n/2-1) and n/2x(n/2-1) 
 
-
+if iscell(v_old) == 1
+    v_old = cell2mat(v_old)
+end
 n = length(v_old); %v_old is length n/2-1
 d = 2*ones(n,1); 
 d1 = ones(n+1,1); 
