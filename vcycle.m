@@ -13,7 +13,7 @@ f = f_array{levels};
 v = v_array{levels};
 
 [v_new, residual] = relax(2/3, v, f, nu1, h);
-v = v_new - v; 
+v = v_new; 
 if levels == 1 
     %direct solve
     v = directsolve(v,f,h); 
@@ -23,16 +23,14 @@ else
     f_coarse = restrict('fw',residual); 
     f_array{levels-1} = f_coarse; 
     [v_array,f_array] = vcycle(h/2,f_array, v_array,levels-1, nu1, nu2); 
-    f_array
-    v_array
 end
 
 if levels ~= 1
     vold = v_array{levels-1}; 
-    v = v + interpolate(v_array{levels-1}); 
+    v = v + interpolate(vold); 
 end
 [v_new, residual] = relax(2/3, v, f, nu1, h);
-v= v_new - v; 
+v= v_new; 
 v_array{levels} = v; 
  
 end

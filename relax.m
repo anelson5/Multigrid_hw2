@@ -35,6 +35,6 @@ for i = 1:n
 
     v = R_w*v + w*c; 
 end
-v_new = v; 
+v_new = v 
 residual = rhs - A*v_new; 
 

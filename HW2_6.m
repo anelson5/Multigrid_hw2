@@ -14,31 +14,51 @@
 %   Since we're looking at a one dimensional problem by the Galerkin
 %   property, we know that A_coarser = I_restrict*A_finer*I_interpolate
 
+clear
+clc
+nu1 = 2; 
+nu2 = 2; 
 w = 2/3; 
-n=16; 
+n=32; 
 h=1/n; 
-x = 0:h:1; 
-size(x);
-
+x = 0:h:1;
 %Need to have vh be length n-1
-main = 2*ones(n-1,1); 
-off = -1*ones(n-1,1); 
-Ah = spdiags([off main off],-1:1, n-1,n-1);
+main = 2*ones(n-2,1); 
+off = -1*ones(n-2,1); 
+Ah = spdiags([off main off],-1:1, n-2,n-2);
 Ah = 1/h^2*Ah; 
 
-levels = 4; 
+levels = 2; 
 
 for i = 1:levels
-    if i ==1 
-        v = zeros(length(x)-2,1); 
-        v_array{i} = v; 
-        f_array{i} = zeros(length(x)-2,1); 
+    if i ==1
+        x = x(2:end-1); 
+        v= -x.^2;
+        if iscolumn(v) == 0
+            v_array{i} = v'; 
+        end
+        
+        f_array{i} = ones(length(x),1); 
     else
         h = h*2;
         x = 0:h:1; 
     v_array{i} = zeros(length(x)-2,1); 
-    f_array{i} = zeros(length(x)-2,1); 
+    f_array{i} = ones(length(x)-2,1); 
     end
 end
-[v_array,f_array] = vcycle(h,f_array,v_array,l, nu1, nu2)
+f_array = fliplr(f_array);
+v_array = fliplr(v_array);
+
+[v_array,f_array] = vcycle(h,f_array,v_array,levels, nu1, nu2);
+
 %Gives the solution at the coarsest grid
+n=32; 
+h=1/n; 
+x = 0:h:1;
+true = -0.5*x.^2 + 0.5*x; 
+plot(x,true); 
+hold on; 
+this = v_array{levels};
+this = this'; 
+y = [0 this 0]; 
+plot(x,y,'rx')
