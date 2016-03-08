@@ -5,7 +5,7 @@ function [v_new,residual] = relax(omega, v, rhs, n, h)
 %           v_m+1 = [(1-w)I + wR_j]v_m + wc
 %
 w = omega;  
-d = 2*ones(size(v));
+d = 2*ones(length(v),1);
 N = length(v); 
 s = -1*ones(length(v),1); 
 A = spdiags([s d s], -1:1, N,N); 
@@ -26,15 +26,15 @@ end
 R_j = D\(L+U); 
 
 c = D\rhs; 
-I = eye(size(R_j));
+I = eye(size(A));
 
 %Weighted Jacobi matrix formed 
-R_w = (1-w)*I + w*R_j;
-
+%R_w = (1-w)*I + w*R_j;
+R_w = I - w*h^2/2*A;
 for i = 1:n
 
     v = R_w*v + w*c; 
 end
-v_new = v 
+v_new = v ;
 residual = rhs - A*v_new; 
 
