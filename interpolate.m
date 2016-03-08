@@ -19,15 +19,15 @@ ones_matrix = spdiags([d1 d1],-1:0, n+1,n);
 rows = size(two_matrix,1) + size(ones_matrix,1); %adding the number of rows of the two matrices
 %two_matrix = full(two_matrix);
 row_interweave = reshape([ones_matrix(:) two_matrix(:) ]',rows, []);
-row_interweave = row_interweave(1:end-1,:);
+row_interpolate = row_interweave(1:end-1,:);
 
 %if v_old is a row vector, put your thang down flip it and reverse it
 if iscolumn(v_old) == 0
     v_old = v_old'; 
 end
-row_interweave
 
-v_new = 1/2*row_interweave*v_old; 
+
+v_new = 1/2*row_interpolate*v_old; 
 
 %v_new has length n-1
 end
