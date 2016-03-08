@@ -1,20 +1,15 @@
-function [v_new,residual] = relax(omega, v, rhs, n, h)
+function [v_new,residual] = relax1(omega, v, rhs, n, h)
 %Relax - Performs weighted Jacobi relaxation with a given omega value.
 %Takes the v_approx, f_approx on the given grid and does n sweeps with i. 
 %       Weighted Jacobi: R_j = D^(-1)(L+U), c = D^(-1)b
 %           v_m+1 = [(1-w)I + wR_j]v_m + wc
 %
-w = omega;  
-d = 2*ones(length(v),1);
 N = length(v); 
-s = -1*ones(length(v),1); 
-A = spdiags([s d s], -1:1, N,N); 
-A = 1/(h^2)*A; 
-%Extract the lower, upper and diagonal part of A, to form R_j
-L = tril(A); 
-U = triu(A); 
-D = diag(diag(A)); 
-
+w = omega; 
+e = ones(N,1); 
+D = 1/(h^2)*spdiags(2*e,0,N,N); 
+L = 1/(h^2)*spdiags(e,-1,N,N); 
+U = L'; 
 if iscolumn(rhs) == 0
     rhs = rhs'; 
 end
@@ -23,18 +18,15 @@ if iscolumn(v)==0
 end
 
 %R_j formed using the Jacobi matrix
-R_j = D\(L+U); 
 
-c = D\rhs; 
-I = eye(size(A));
+
 
 %Weighted Jacobi matrix formed 
-%R_w = (1-w)*I + w*R_j;
-R_w = I - w*h^2/2*A;
 for i = 1:n
 
-    v = R_w*v + w*c; 
+    v = (1-w)*v + w*(D\((L+U)*v + rhs)); 
 end
 v_new = v ;
-residual = rhs - A*v_new; 
+residual = rhs - (D-L-U)*v_new; 
+
 
