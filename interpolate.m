@@ -25,7 +25,7 @@ row_interweave = row_interweave(1:end-1,:);
 if iscolumn(v_old) == 0
     v_old = v_old'; 
 end
-row_interweave
+
 
 v_new = 1/2*row_interweave*v_old; 
 
